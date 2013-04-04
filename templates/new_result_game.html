@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<style type="text/css">
+
+#send_data{
+	margin: 2em;
+	padding: 1em;
+}
+#send_data textarea{
+	width: 50%;
+	height: 20em;
+}
+
+</style>
+
+<p>
+	<h1> Введите данные об игре </h1>
+	<div id = "send_data">
+		<form action="/send_result_game/" method="post">
+			<textarea name = "data_game"> </textarea> <br>
+			<input type = "submit" value="Отправить">
+		</form>
+		{{accept}}
+	</div>
+</p>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block login %}
+
+  <H1>Вход</H1> 
+  {% if errors %}
+    <p>Сожалеем, вы неправильно ввели логин или пароль</p>
+  {% endif %}
+
+  <style type="text/css">
+  </style>
+
+  <form action='.' method='post'>
+    <table  id = "login_form">
+      <tr>
+      <th> <label for="username"><span>Логин:</span></label> </th>
+      <td> <input type="text" name="username" id="username" /> </td>
+      </tr>
+      <tr>
+      <th> <label for="password"><span>Пароль:</span></label> </th>
+      <td> <input type="password" name="password" id="password" /> </td>
+      </tr>
+    </table>
+      <input type="submit" value="Вход" />
+   </form>
+
+{% endblock %}

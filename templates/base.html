@@ -1,0 +1,131 @@
+<html>
+
+<head>
+<title> Шляпа </title>
+	<style type="text/css"> 
+		html{
+			margin-left: 1%;
+			margin-right: 1%;
+			padding-left: 0px;
+			padding-right: 0px;
+			border-color: green;
+			border-left-style: solid;
+			border-right-style: solid;
+			background-color: #56ff54;
+		}
+		body{
+			height: auto;
+			padding-left: 0px;
+			padding-right: 0px;
+			margin-right: 0px;
+			margin-left: 0px;
+		}
+		#title{
+			margin: 0%;
+			padding: 0%;
+		}
+		#title h1{
+			margin: 0%;
+			padding-top: 1%;
+			padding-bottom: 1%;
+			font-family: "Helvetica Neue";
+			font-size: 200%;
+			text-align: center;
+			background-color: #5aff11;
+			border-bottom-style: solid;
+			border-bottom-color: green;
+		}
+		#title a:visited{
+			color: black;
+		}
+		#title a:active{
+			color: black;
+		}
+		#title a:hover{
+			color: black;
+		}
+		div#main{
+			float: left;
+			width : 74%;
+			height: auto;
+			min-height: 100%;
+			border-right-style: solid;
+			border-right-color: green;
+		}
+		div#menu{
+			min-height: 100%;
+			float: left;
+			width: 25%; 
+			height: auto;
+		}
+		h1{
+			font-size: 120%;
+			text-align: center;
+			font-family: "Helvetica Neue";
+			padding: 1%;
+		}
+		.menu_item {
+			position: relative;
+			left: 0%;
+			padding: 20px;		
+		}
+		.menu_item input{
+			border-radius: 10px;
+			background-color: #5aff11;
+			width: 100%;
+			height: 10%;
+			font-size:110%;	
+			border-color: green;
+		}
+	</style>
+</head>
+
+<body>
+
+<div id = "title">	
+<a  href = "/" > <h1>  Шляпа </h1> </a>
+</div>
+
+<div id = "main">
+{% block main %}{% endblock %}
+</div>
+
+<div id = "menu">
+ 	<p>
+ 		{% include "register.html"%}
+	 </p>		 	
+	{% block login %}
+	{% endblock %}
+
+	{% block register %}
+	{% endblock %}
+
+	
+	{% if user.is_authenticated %}
+	<p>
+		<form action = "/words/" class = "menu_item">
+			<input type="submit" value="Мои слова"/>
+		</form>
+	</p>
+	<p>
+		<form action="/request_words/" class = "menu_item">
+		    <input type="submit" value="Взять слова для игры">
+		</form>
+	</p>
+	<p>
+		<form action="/new_result_game/" class = "menu_item">
+		    <input type="submit" value="Ввести данные о игре">
+		</form>
+	</p>
+	<p>
+		<form action="/logout/" class = "menu_item">
+		    <input type="submit" value="Выйти">
+		</form>
+	</p>
+
+	{% endif %}
+</div>
+
+
+</body>
+</html>

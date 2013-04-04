@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<style type="text/css">
+#request_words{
+	text-align: left;
+	position: relative;
+	width: 50%;
+	float: left;
+	margin: 1em;
+	padding-left: 2em;
+	padding-right: 2em; 
+}
+#request_words h2{
+	position: relative;
+	font-size: 110%;
+}
+#answer{
+	float: left;
+	width: 30%;
+	margin: 2em;
+}
+</style>
+
+<p>
+	<h1> Здесь Вы можете взять слова для игры </h1>
+	<div id="request_words">
+		<h2> Выбирете игроков</h2>
+		<form action="/create_game/" method="post">
+		{% for user in users %} 
+		<input type="checkbox" name="player" value="{{user.id}}"> {{user.get_full_name}}
+		<br>
+		{% endfor %}
+		<label for="number_words"> Сколько слов играем с человека?</label>
+		<input name = "number_words" id="number_words" value=""> </input>
+		<br>
+		<label for="name_game"> Название игры </label>
+		<input name = "name_game" id="name_game" value=""> </input>
+		<br>
+		<input type="submit" value="Создать шляпу!"> </input>
+		</form>	
+	</div>
+	<div id = "answer">
+		{{answer}}
+	</div>
+</p>
+{% endblock %}

@@ -1,0 +1,26 @@
+<style text = "css/text">
+#user_name_main {
+  position: relative;
+  text-align: center;
+  font-size: 150%;
+}
+</style>
+
+
+{% if user.is_authenticated %}
+  <div id = "user_name_main">
+   <span> {{ user.first_name }} {{ user.last_name }} </span>
+ </div>
+{% else %}
+   {% if not login_page and not register_page %}
+     <form action="/login/" class = 'menu_item'>
+         <input type="submit" value="Войти">
+     </form>
+     <form action="/register/" class = 'menu_item'>
+         <input type="submit" value="Зарегистрироваться">
+     </form>
+    {% endif %}
+
+{% endif %}
+
+

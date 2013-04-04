@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<style type="text/css">
+.table_words{
+	position: relative;
+	left: 20%;
+	top: 0px;
+	width: 20%;
+	float: left;
+}
+.word{
+	width: 10%;
+	margin: 0px;
+	padding: 0px;
+	font-size: 120%;
+}
+#write_words{
+	float: left;
+	width: 10%;
+	position: relative;
+	left: 40%;
+	top: 0%;
+}
+.button_del{
+	background-image: url(/media/delete.png);
+    background-color: transparent; 
+    background-repeat: no-repeat; 
+    background-position: 0px 0px;
+}
+</style>
+
+<p>
+	<h1> Данные по вашим словам для игр </h1>
+	<div class="table_words">
+		
+		<!--  >
+		<form action="." method="post">
+		{% for word in wordsUser %}
+		  <input type="button" value="{{word}}" class='button_del'>
+	      <p class = "word"> {{word.word}}</p> 
+		{% endfor %}
+		</form>
+		< -- >
+		{% for word in wordsUser %}
+		  <p class = "word"> {{word.word}}</p> 
+		{% endfor %}
+	</div>
+	<div id="write_words" >
+		<form action="." method="post">
+			<table>
+				{{form.as_table}}
+			</table>
+		<input type='submit' value='Сохранить'>
+		</form>
+	</div>
+</p>
+{% endblock %}
