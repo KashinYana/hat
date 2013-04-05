@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<style type="text/css">
+#report_game {
+	margin: 3em;
+	position: relative;
+	left: 5%;
+}
+
+#report_game table{
+	border-collapse:collapse;
+}
+
+#report_game table,th, td{
+	border: 1px solid black;
+}
+
+#report_game td {
+	padding:1.5em;
+}
+
+</style>
+
+<p>
+	<h1> История игры "{{game.name}}"  </h1>
+
+	<div id="report_game">
+		{% if reportGame %}
+			<table border="1">
+				<tr>
+				<th> Слово </th> <th> Кто объяснял </th> <th> Кому объяснял</th> 
+				</tr>
+				{% for report in reportGame %}
+				 <td> {{report.word.word}} </td>
+				 <td> {{report.userFrom.get_full_name}} </td>
+				 <td> {{report.userTo.get_full_name}} </td>
+				{% endfor %}
+			</table>
+		{% endif %}	
+	</div>
+</p>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<style type="text/css">
+#list_games {
+	padding: 2em;
+	position: relative;
+	left: 20%;
+	top: 0%;
+}
+</style>
+
+<p>
+	<h1> История прошедших игр </h1>
+	<div id="list_games">
+		{% for game in games %}
+			<a href = '/history_game/{{game.id}}'> {{game.name}} </a> <br />
+		{% endfor %}
+	</div>
+</p>
+{% endblock %}

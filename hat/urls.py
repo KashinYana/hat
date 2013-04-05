@@ -7,7 +7,7 @@ import json
 from django.contrib import admin
 admin.autodiscover()
 
-from views import main, words, delete_word, save_words, request_words, create_game, new_result_game, send_result_game
+from views import main, words, delete_word, save_words, request_words, create_game, new_result_game, send_result_game, history, history_game
 import settings
 
 urlpatterns = patterns('',
@@ -16,13 +16,16 @@ urlpatterns = patterns('',
     url(r'^login/$', login),
     url(r'^logout/$', logout),
     url(r'^profile/$', profile),
-    url(r'^words/', words),
-    url(r'^delete_word/', delete_word),
-    url(r'^save_words/', save_words),
-    url(r'^request_words/', request_words),
-    url(r'^create_game/', create_game),
-    url(r'^new_result_game/', new_result_game),
-    url(r'^send_result_game/', send_result_game),
+    url(r'^words/$', words),
+    url(r'^delete_word/$', delete_word),
+    url(r'^save_words/$', save_words),
+    url(r'^request_words/$', request_words),
+    url(r'^create_game/$', create_game),
+    url(r'^new_result_game/$', new_result_game),
+    url(r'^send_result_game/$', send_result_game),
+    url(r'^history_game/(\d{1,2})/$', history_game),
+    url(r'^history/$', history),
+    
     (r'^media/(?P<path>.*)$', 'django.views.static.serve',
                  {'document_root': settings.MEDIA_ROOT}),
     # Examples:
