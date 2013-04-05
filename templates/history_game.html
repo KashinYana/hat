@@ -30,12 +30,14 @@
 		{% if reportGame %}
 			<table border="1">
 				<tr>
-				<th> Слово </th> <th> Кто объяснял </th> <th> Кому объяснял</th> 
+					<th> Слово </th> <th> Кто объяснял </th> <th> Кому объяснял</th> 
 				</tr>
 				{% for report in reportGame %}
+				 <tr>
 				 <td> {{report.word.word}} </td>
 				 <td> {{report.userFrom.get_full_name}} </td>
 				 <td> {{report.userTo.get_full_name}} </td>
+				</tr>
 				{% endfor %}
 			</table>
 		{% endif %}	
