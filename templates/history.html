@@ -8,15 +8,34 @@
 	position: relative;
 	left: 20%;
 	top: 0%;
+	font-size: 1.2em;
+}
+#list_games p,li {
+	margin-top: 1em;
+}
+#list_games a:link{
+	color: black;
+}
+#list_games a:visited{
+	color: black;
+}
+#list_games a:active{
+	color: black;
+}
+#list_games a:hover{
+	color: black;
 }
 </style>
 
 <p>
 	<h1> История прошедших игр </h1>
 	<div id="list_games">
+		Выберите игру
+		<ul>
 		{% for game in games %}
-			<a href = '/history_game/{{game.id}}'> {{game.name}} </a> <br />
+		<li> <a href = '/history_game/{{game.id}}'> {{game.name}} </a> </li>
 		{% endfor %}
+		</ul>
 	</div>
 </p>
 {% endblock %}

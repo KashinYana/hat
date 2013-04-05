@@ -74,8 +74,10 @@ def create_game(request):
 
 def request_words(request, json = ""):
 	users = User.objects.all()
-	#return render_to_response('request_words.html', {'users':users, 'answer':words}, context_instance=RequestContext(request))
-	return HttpResponse(json)
+	if json == "":
+		return render_to_response('request_words.html', {'users':users, 'answer':json}, context_instance=RequestContext(request))
+	else:
+		return HttpResponse(json)
 
 def new_result_game(request, accept = ""):
 	return render_to_response('new_result_game.html', {'accept': accept}, context_instance=RequestContext(request))	
@@ -86,8 +88,9 @@ def send_result_game(request):
 		dataGame = request.POST.get('data_game')
 		gameId = int(simplejson.loads(dataGame)['gameId'])
 		statistics = simplejson.loads(dataGame)['statistics']
+
 		for explanation in statistics:
-			newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation[0]), userFrom_id = int(explanation[1]), userTo_id = int(explanation[2]))
+			newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation['wordId']), userFrom_id = int(explanation['userFrom']), userTo_id = int(explanation['userTo']))
 			newDataGame.save()
 		accept = "Данные успешно сохранены."
 	return new_result_game(request, accept)
