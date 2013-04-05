@@ -72,9 +72,10 @@ def create_game(request):
 	return request_words(request, json)
 
 
-def request_words(request, words = ""):
+def request_words(request, json = ""):
 	users = User.objects.all()
-	return render_to_response('request_words.html', {'users':users, 'answer':words}, context_instance=RequestContext(request))
+	#return render_to_response('request_words.html', {'users':users, 'answer':words}, context_instance=RequestContext(request))
+	return HttpResponse(json)
 
 def new_result_game(request, accept = ""):
 	return render_to_response('new_result_game.html', {'accept': accept}, context_instance=RequestContext(request))	
