@@ -24,7 +24,7 @@
 </style>
 
 <p>
-	<h1> Здесь Вы можете взять слова для игры </h1>
+	<h1> Здесь Вы можете создать игру </h1>
 	<div id="request_words">
 		<h2> Выбирете игроков</h2>
 		<form action="/create_game/" method="post">
@@ -42,7 +42,12 @@
 		</form>	
 	</div>
 	<div id = "answer">
-		{{answer}}
+		{% if answer %}
+		Игра создана. <br />
+		Номер игры: {{gameId}}<br / >
+		Ваш пароль: {{answer}}
+		{%endif%}
 	</div>
+
 </p>
 {% endblock %}

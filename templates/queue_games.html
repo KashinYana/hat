@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<style type="text/css">
+#request_words{
+	text-align: left;
+	position: relative;
+	width: 50%;
+	float: left;
+	margin: 1em;
+	padding-left: 2em;
+	padding-right: 2em; 
+}
+#request_words h2{
+	position: relative;
+	font-size: 110%;
+}
+#answer{
+	float: left;
+	width: 30%;
+	margin: 2em;
+}
+</style>
+
+<p>
+	<h1> Созданные, но не сыгранные игры </h1>
+	<div id="request_words">
+		<table>
+		<tr>
+		<th> Название игры </th> <th> Номер игры </th> <th> Пароль </th>
+		</tr>
+		{%for game in games%}
+		<tr>
+			<td> {{game.name}} </td> <td> {{game.id}}</td><td> {{game.password}} </td>
+		</tr>
+		{%endfor%}
+		</table>	
+	</div>
+	<div id = "answer">
+
+	</div>
+
+</p>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<style type="text/css">
+#request_words{
+	text-align: left;
+	position: relative;
+	width: 50%;
+	float: left;
+	margin: 1em;
+	padding-left: 2em;
+	padding-right: 2em; 
+}
+#request_words h2{
+	position: relative;
+	font-size: 110%;
+}
+#answer{
+	float: left;
+	width: 30%;
+	margin: 2em;
+}
+</style>
+
+<p>
+	<h1> Здесь Вы можете взять данные для игры </h1>
+	<div id="request_words">
+		<form action="/take_data/" method="post">
+
+		<label for="gameId"> Номер игры </label>
+		<input name = "gameId" id="gameId" value=""> </input>
+		<br>
+		<label for="password"> Пароль </label>
+		<input name = "password" id="password" value=""> </input>
+		<br>
+		<input type="submit" value="Отправить"> </input>
+		</form>	
+	</div>
+	<div id = "answer">
+		{% if answer %}
+		Игра создана. <br />
+		Номер игры: {{gameId}}<br / >
+		Ваш пароль: {{answer}}
+		{%endif%}
+	</div>
+
+</p>
+{% endblock %}

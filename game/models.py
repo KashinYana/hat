@@ -5,10 +5,11 @@ from django.contrib.auth.models import User
 
 class Game(models.Model):
 	name = models.CharField(max_length = 100)
-
+	password = models.IntegerField()
+	creator = models.ForeignKey(User, related_name='creator')
+	user = models.ManyToManyField(User, related_name='user')
 	def __unicode__(self):
 		return u'%s' % (self.name)	
-
 
 class Word(models.Model):
 	word = models.CharField(max_length = 100)

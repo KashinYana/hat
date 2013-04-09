@@ -8,6 +8,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 from views import main, words, delete_word, save_words, request_words, create_game, new_result_game, send_result_game, history, history_game
+from views import queue_games, take_data, imitator_request
 import settings
 
 urlpatterns = patterns('',
@@ -23,8 +24,12 @@ urlpatterns = patterns('',
     url(r'^create_game/$', create_game),
     url(r'^new_result_game/$', new_result_game),
     url(r'^send_result_game/$', send_result_game),
+    url(r'^queue_games/$', queue_games),
     url(r'^history_game/(\d{1,2})/$', history_game),
     url(r'^history/$', history),
+    url(r'^take_data/$', take_data),
+    url(r'^imitator_request/$', imitator_request),
+    
     
     (r'^media/(?P<path>.*)$', 'django.views.static.serve',
                  {'document_root': settings.MEDIA_ROOT}),

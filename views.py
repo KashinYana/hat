@@ -9,6 +9,7 @@ from dataGames.models import DataGames
 from forms import WordForm
 from django.contrib.auth.models import User
 import simplejson
+import random
 
 from game.models import Game, Word, ReportGame, UserWord
 
@@ -55,29 +56,31 @@ def create_game(request):
 		numberWords = int(request.POST.get('number_words'))
 		nameGame = request.POST.get('name_game')
 		
-		newGame = Game(name=nameGame)
+		password = random.randint(1, 100)
+		newGame = Game(name=nameGame, creator = request.user, password = password)
 		newGame.save()
 		
 		for player in players:
+			newGame.user.add(User.objects.get(id = player))
 			words += UserWord.objects.filter(user = User.objects.get(id=player))[0:numberWords]
 		
 		for word in words:
 			print word
 			newGame.userword_set.add(word)
-			#word.game.add(newGame)
 			print word
 
-		words = map(lambda x: {'word': x.word.word, 'id': x.id}, words)
-		json = simplejson.dumps({'gameId':newGame.id, 'words':words})
-	return request_words(request, json)
+		#words = map(lambda x: {'word': x.word.word, 'id': x.id}, words)
+		#json = simplejson.dumps({'gameId':newGame.id, 'words':words})
+		gameId = newGame.id
+	return request_words(request, gameId, password)
 
 
-def request_words(request, json = ""):
+def request_words(request, gameId = 0, password = ""):
 	users = User.objects.all()
-	if json == "":
-		return render_to_response('request_words.html', {'users':users, 'answer':json}, context_instance=RequestContext(request))
-	else:
-		return HttpResponse(json)
+	#if json == "":
+	return render_to_response('request_words.html', {'users':users, 'answer':password, 'gameId': gameId}, context_instance=RequestContext(request))
+	#else:
+	#	return HttpResponse(json)
 
 def new_result_game(request, accept = ""):
 	return render_to_response('new_result_game.html', {'accept': accept}, context_instance=RequestContext(request))	
@@ -112,3 +115,27 @@ def history_game(request, gameId):
 	reportGame = ReportGame.objects.filter(gameId = game)
 	return render_to_response('history_game.html', {'game':game, 'reportGame':reportGame}, context_instance=RequestContext(request))
 
+def queue_games(request):
+	games = Game.objects.filter(creator = request.user)
+	return render_to_response('queue_games.html', {'games':games},context_instance=RequestContext(request))
+
+def take_data(request):	
+	json = {}
+	
+	if request.method == "POST":
+		gameId = int(request.POST.get('gameId'))
+		password = int(request.POST.get('password'))
+		game =  Game.objects.filter(id = gameId)
+	
+		if len(game) == 1 and game[0].password == password:
+			users = game[0].user.all()
+			users = map(lambda x: {'userId':x.id}, users)
+			words = game[0].userword_set.all()
+			words = map(lambda x: {'word': x.word.word, 'id': x.id}, words)
+			json = simplejson.dumps({'gameId':game[0].id, 'words':words, 'users':users})
+	
+	return HttpResponse(json)		
+
+def imitator_request(request):
+
+	return render_to_response('imitator_request.html', context_instance=RequestContext(request))
