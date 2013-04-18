@@ -14,6 +14,7 @@ class Game(models.Model):
 class Word(models.Model):
 	word = models.CharField(max_length = 100)
 	user = models.ManyToManyField(User, through='UserWord')
+	
 	def __unicode__(self):
 		return u'%s' % (self.word)	
 
@@ -21,6 +22,13 @@ class UserWord(models.Model):
 	user = models.ForeignKey(User)
 	word = models.ForeignKey(Word)
 	game = models.ManyToManyField(Game)
+	
+	def allow_delete(self):
+		if len(self.game.all()) == 0:
+			if len(self.word.user.all()) <= 1:
+				return True
+		return False
+
 	def __unicode__(self):
 		return u'%s %s' % (self.user.first_name, self.word.word)
 

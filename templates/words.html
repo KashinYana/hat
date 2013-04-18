@@ -39,8 +39,12 @@
 	<div class="table_words">
 		<form action="/delete_word/" method="post">
 		{% for word in wordsUser %}
-	    	<button value="{{word.word}}" name="del_word" class = "button_del"> <img src="/media/delete.png" class="img_del"/> </button>
-	    	<label for='del_word' class = "word"> {{word.word}}</label> 
+			{% if word.allow_delete %}
+	    	<button value="{{word.word.word}}" name="del_word" class = "button_del"> <img src="/media/delete.png" class="img_del"/> </button>
+	    	{% else %}
+	    	<button value="{{word.word.word}}" name="not_del_word" class = "button_del"> <img src="/media/empty.png" class="img_del"/> </button>
+	    	{% endif%}
+	    	<label for='del_word' class = "word"> {{word.word.word}}</label> 
 	    	<br>
 		{% endfor %}
 		</form>

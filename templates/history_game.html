@@ -7,18 +7,30 @@
 	margin: 3em;
 	position: relative;
 	left: 5%;
+	float: left;
+	width: 50%;
 }
-
-#report_game table{
-	border-collapse:collapse;
-}
-
-#report_game table,th, td{
-	border: 1px solid black;
+#rating {
+	margin: 3em;
+	position: relative;
+	float: left;
 }
 
 #report_game td {
-	padding:1.5em;
+	padding-left:1em;
+	padding-right:1em;
+}
+
+#rating td{
+	padding-left:1em;
+	padding-right:1em;
+}
+
+.class_table table{
+			border-collapse:collapse;
+}
+.class_table table, th, td{
+	border: 1px solid black;
 }
 
 </style>
@@ -26,21 +38,42 @@
 <p>
 	<h1> История игры "{{game.name}}"  </h1>
 
-	<div id="report_game">
+	<div id="report_game" class = "class_table">
 		{% if reportGame %}
 			<table border="1">
 				<tr>
-					<th> Слово </th> <th> Кто объяснял </th> <th> Кому объяснял</th> 
+					<th> Слово </th> <th> Кто объяснял </th> <th> Кому объяснял</th> <th> Объяснил?</th> 
 				</tr>
 				{% for report in reportGame %}
 				 <tr>
 				 <td> {{report.word.word}} </td>
 				 <td> {{report.userFrom.get_full_name}} </td>
 				 <td> {{report.userTo.get_full_name}} </td>
+				 <td> 
+				 	  {% if  report.outcome == 1 %}
+				 	  	да
+				 	  {% else %}
+				 	  	нет
+				 	  {% endif %}
+				 </td>
 				</tr>
 				{% endfor %}
 			</table>
 		{% endif %}	
+	</div>
+	<div id = "rating" class = "class_table">
+		{% if rating %}
+			<table border="1">
+			<tr>
+				<th> Место </th> <th> Игрок </th> <th> Очки </th>
+			</tr>
+			{% for id in rating %}
+			<tr>
+			  <td>{{id.0}}</td> <td>{{id.1.0}}</td> <td> {{id.1.1}}</td>
+			</tr>
+			{% endfor %}
+			</table>
+		{% endif %}
 	</div>
 </p>
 {% endblock %}

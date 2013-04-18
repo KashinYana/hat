@@ -36,6 +36,7 @@ def save_words(request):
 					userWordNew.save()				
 	return HttpResponseRedirect('/words/')
 
+
 def delete_word(request):
 	if request.method == "POST":
 		wordsForDelete = request.POST.getlist('del_word')
@@ -105,18 +106,26 @@ def words(request):
 	form = WordForm()
 	if request.method == "POST":
 		form = WordForm(request.POST)
-	wordsUser = Word.objects.filter(user = request.user)
+	wordsUser = UserWord.objects.filter(user = request.user)
 	return render_to_response('words.html', {'wordsUser': wordsUser, 'form':form}, context_instance=RequestContext(request))
 
 
 def history(request):
-	games = Game.objects.all()
+	games = Game.objects.filter(user = request.user)
 	return render_to_response('history.html', {'games':games}, context_instance=RequestContext(request))
 
 def history_game(request, gameId):
 	game = Game.objects.get(id = int(gameId))
+	users = game.user.all()
+	rating = []
+	for user in users:
+		rating.append((user, ReportGame.objects.filter(gameId = game, userFrom = user, outcome = 1).count() + \
+			ReportGame.objects.filter(gameId = game, userTo = user, outcome = 1).count()))
+	rating = sorted(rating, key = lambda x: x[1], reverse=True)
+	rangeForRating = range(1, len(rating))
 	reportGame = ReportGame.objects.filter(gameId = game)
-	return render_to_response('history_game.html', {'game':game, 'reportGame':reportGame}, context_instance=RequestContext(request))
+	return render_to_response('history_game.html', {'game':game, 'reportGame':reportGame, 'rangeForRating':rangeForRating,\
+	  	'rating' : zip(rangeForRating, rating)}, context_instance=RequestContext(request))
 
 def queue_games(request):
 	games = Game.objects.filter(creator = request.user)
