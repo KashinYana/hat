@@ -65,10 +65,8 @@ def create_game(request):
 			words += UserWord.objects.filter(user = User.objects.get(id=player))[0:numberWords]
 		
 		for word in words:
-			print word
 			newGame.userword_set.add(word)
-			print word
-
+			
 		#words = map(lambda x: {'word': x.word.word, 'id': x.id}, words)
 		#json = simplejson.dumps({'gameId':newGame.id, 'words':words})
 		gameId = newGame.id
@@ -129,7 +127,7 @@ def take_data(request):
 	
 		if len(game) == 1 and game[0].password == password:
 			users = game[0].user.all()
-			users = map(lambda x: {'userId':x.id}, users)
+			users = map(lambda x: {'userId':x.id, 'userName':x.get_full_name() }, users)
 			words = game[0].userword_set.all()
 			words = map(lambda x: {'word': x.word.word, 'id': x.id}, words)
 			json = simplejson.dumps({'gameId':game[0].id, 'words':words, 'users':users})
