@@ -10,6 +10,7 @@ from forms import WordForm
 from django.contrib.auth.models import User
 import simplejson
 import random
+import datetime
 
 from game.models import Game, Word, ReportGame, UserWord
 
@@ -91,7 +92,11 @@ def send_result_game(request):
 		statistics = simplejson.loads(dataGame)['statistics']
 
 		for explanation in statistics:
-			newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation['wordId']), userFrom_id = int(explanation['userFrom']), userTo_id = int(explanation['userTo']))
+			seconds = int(explanation['duration'])
+			time = datetime.time(minute = int(seconds / 60), second = seconds % 60)
+			newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation['wordId']), \
+				userFrom_id = int(explanation['userFrom']), userTo_id = int(explanation['userTo']),\
+				outcome = int(explanation['outcome']), duration = time)
 			newDataGame.save()
 		accept = "Данные успешно сохранены."
 	return new_result_game(request, accept)
