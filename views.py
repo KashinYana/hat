@@ -93,11 +93,10 @@ def send_result_game(request):
 		statistics = simplejson.loads(dataGame)['statistics']
 
 		for explanation in statistics:
-			seconds = int(explanation['duration'])
-			time = datetime.time(minute = int(seconds / 60), second = seconds % 60)
 			newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation['wordId']), \
 				userFrom_id = int(explanation['userFrom']), userTo_id = int(explanation['userTo']),\
-				outcome = int(explanation['outcome']), duration = time)
+				outcome = int(explanation['outcome']), duration = int(explanation['duration']), \
+				tour = int(explanation['tour']) )
 			newDataGame.save()
 		accept = "Данные успешно сохранены."
 	return new_result_game(request, accept)
@@ -114,18 +113,78 @@ def history(request):
 	games = Game.objects.filter(user = request.user)
 	return render_to_response('history.html', {'games':games}, context_instance=RequestContext(request))
 
+def number_rounds(user, game):
+	explanationTo = ReportGame.objects.filter(gameId = game, userTo = user)
+	explanationFrom = ReportGame.objects.filter(gameId = game, userFrom = user)
+	toursTo = filter(lambda x: x.tour, explanationTo)
+	toursFrom = filter(lambda x: x.tour, explanationFrom)
+	tours = list(set(toursFrom + toursTo))
+	return len(tours)
+
+def rating_users(users, game):	
+	rating = []
+	for user in users:
+		scroteMainTime = ReportGame.objects.filter(gameId = game, userFrom = user, outcome = 1).count() + \
+			ReportGame.objects.filter(gameId = game, userTo = user, outcome__gt = 1).count()
+		scroteExtraTime = ReportGame.objects.filter(gameId = game, userFrom = user, outcome = 2).count() + \
+			ReportGame.objects.filter(gameId = game, userTo = user, outcome__gt = 2).count()	
+		numberRounds = number_rounds(user, game)
+		rating.append((user, scroteExtraTime + scroteMainTime, \
+			scroteMainTime, scroteExtraTime, numberRounds))
+
+	rating = sorted(rating, key = lambda x: x[1], reverse=True)
+	rangeForRating = range(1, len(rating) + 1)
+	return zip(rangeForRating, rating)
+
+class FeatureWords:
+	def __init__(self):
+		self.duration = 0
+		self.numAttempts = 0
+		self.latestDuration = 0
+		self.latestUserFrom = 0
+		self.latestUserTo = 0
+		self.tour = -1
+	def add(self, attempt):
+		self.numAttempts += 1
+		self.duration += attempt.duration
+		if self.tour < attempt.tour and attempt.outcome > 0:
+			self.latestDuration = attempt.duration
+			self.tour = attempt.tour
+			self.latestUserTo = attempt.userTo
+			self.latestUserFrom = attempt.userFrom
+
+def statistics_words(game):
+	words = UserWord.objects.filter(game = game)
+	reportWords = ReportGame.objects.filter(gameId = game)
+	table = dict()
+	for word in words:
+		if not table.has_key(word.word):
+			table[word.word] = FeatureWords()
+	for word in reportWords:
+		table[word.word.word].add(word)
+	return table
+
+def statistics_pair_users(users, game):
+	rating = []
+	numPairs = 0
+	for i in range(len(users)):
+		for j in range(i + 1, len(users)):
+			numPairs += 1
+			rating.append([users[i], users[j],\
+				ReportGame.objects.filter(gameId = game, userFrom=users[i], userTo = users[j], outcome__gt = 0).count(),\
+				ReportGame.objects.filter(gameId = game, userFrom=users[j], userTo = users[i], outcome__gt = 0).count()] )
+
+	return zip(range(1, numPairs + 1), rating)
+
 def history_game(request, gameId):
 	game = Game.objects.get(id = int(gameId))
 	users = game.user.all()
-	rating = []
-	for user in users:
-		rating.append((user, ReportGame.objects.filter(gameId = game, userFrom = user, outcome = 1).count() + \
-			ReportGame.objects.filter(gameId = game, userTo = user, outcome = 1).count()))
-	rating = sorted(rating, key = lambda x: x[1], reverse=True)
-	rangeForRating = range(1, len(rating))
+	ratingUsers = rating_users(users, game)
+	statisticsWords = statistics_words(game)
 	reportGame = ReportGame.objects.filter(gameId = game)
-	return render_to_response('history_game.html', {'game':game, 'reportGame':reportGame, 'rangeForRating':rangeForRating,\
-	  	'rating' : zip(rangeForRating, rating)}, context_instance=RequestContext(request))
+	ratingPairUsers = statistics_pair_users(users, game)
+	return render_to_response('history_game.html', {'game':game, 'reportGame':reportGame,\
+	  	'rating' : ratingUsers, 'ratingPairUsers': ratingPairUsers, 'statisticsWords':statisticsWords.items()}, context_instance=RequestContext(request))
 
 def queue_games(request):
 	games = Game.objects.filter(creator = request.user)

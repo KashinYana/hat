@@ -6,14 +6,22 @@
 #report_game {
 	margin: 3em;
 	position: relative;
-	left: 5%;
-	float: left;
-	width: 50%;
+	left: 0%;
 }
+
+#report_game td, th{
+	text-align: center;
+}
+
+#report_game table{
+	width: 100%;
+}
+
 #rating {
 	margin: 3em;
 	position: relative;
-	float: left;
+	clear: right;
+	left: 0%;
 }
 
 #report_game td {
@@ -26,11 +34,31 @@
 	padding-right:1em;
 }
 
+#statisticsWords {
+	margin: 3em;
+}
+
+#ratingPairUsers{
+	margin: 3em;
+}
+
+#ratingPairUsers table{
+	width: 100%;
+}
+
+
+
+#statisticsWords td, th{
+	text-align: center;
+	width: 16.6%;
+}
+
 .class_table table{
-			border-collapse:collapse;
+	border-collapse:collapse;
 }
 .class_table table, th, td{
 	border: 1px solid black;
+	text-align: center;
 }
 
 </style>
@@ -42,8 +70,13 @@
 		{% if reportGame %}
 			<table border="1">
 				<tr>
-					<th> Слово </th> <th> Кто объяснял </th> <th> Кому объяснял</th> <th> Объяснил?</th> 
+					<th ROWSPAN=2> Слово </th> <th ROWSPAN=2> Кто объяснял </th> <th ROWSPAN=2 > Кому объяснял</th> <th COLSPAN=2> Объяснил?</th> 
 				</tr>
+				<tr>
+					<th> Основное время </th>
+					<th> Дополнительное время </th> 
+				</tr>
+
 				{% for report in reportGame %}
 				 <tr>
 				 <td> {{report.word.word}} </td>
@@ -51,6 +84,13 @@
 				 <td> {{report.userTo.get_full_name}} </td>
 				 <td> 
 				 	  {% if  report.outcome == 1 %}
+				 	  	да
+				 	  {% else %}
+				 	  	нет
+				 	  {% endif %}
+				 </td>
+				 <td> 
+				 	  {% if  report.outcome == 2 %}
 				 	  	да
 				 	  {% else %}
 				 	  	нет
@@ -65,13 +105,48 @@
 		{% if rating %}
 			<table border="1">
 			<tr>
-				<th> Место </th> <th> Игрок </th> <th> Очки </th>
+				<th> Место </th> <th> Игрок </th> <th> Очки </th> <th> Очки в основное время </th>  <th> Очки в дополнительное время</th>
+				<th> Сколько раундов сыграно </th>
 			</tr>
 			{% for id in rating %}
 			<tr>
-			  <td>{{id.0}}</td> <td>{{id.1.0}}</td> <td> {{id.1.1}}</td>
+			  <td>{{id.0}}</td> <td>{{id.1.0.get_full_name}}</td> <td> {{id.1.1}}</td> <td> {{id.1.2}} </td> <td> {{id.1.3}}</td>
+			  <td> {{id.1.4}} </td>
 			</tr>
 			{% endfor %}
+			</table>
+		{% endif %}
+	</div>
+	<div id = "statisticsWords" class = "class_table">
+		{% if statisticsWords %}
+			<table>
+				<tr>
+				<th> Слово </th> <th> Сколько раз объясняли </th> <th> Суммарное время объяснения </th> <th>  Время на последнее объяснение </th> <th> Кто объяснил </th> <th> Кто отгадал </th>
+				</tr>
+				{% for line in statisticsWords %}
+				<tr>
+				<td> {{line.0}}</td> <td> {{line.1.numAttempts}}</td>
+				<td> {{line.1.duration}} </td> <td> {{line.1.latestDuration}} </td>
+				<td> {{line.1.latestUserFrom.get_full_name}} </td>
+				<td> {{line.1.latestUserTo.get_full_name}} </td>
+				</tr>
+				{% endfor%}
+			</table>
+		{% endif %}
+	</div>
+	<div id = "ratingPairUsers" class = "class_table">
+		{% if ratingPairUsers %}
+			<table>
+				<tr>
+					<th> Место </th> <th> Игрок 1 </th> <th> Игрок 2</th> <th> Очки -> </th> <th> Очки <- </th>
+				</tr>
+				{% for line in ratingPairUsers %}
+					<td> {{line.0}} </td>
+					<td> {{line.1.0.get_full_name}} </td>
+					<td> {{line.1.1.get_full_name}} </td>
+					<td> {{line.1.2}} </td>
+					<td> {{line.1.3}} </td>
+				{% endfor %}
 			</table>
 		{% endif %}
 	</div>

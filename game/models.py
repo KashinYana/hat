@@ -38,7 +38,8 @@ class ReportGame(models.Model):
 	userTo = models.ForeignKey(User, related_name='userTo')
 	word = models.ForeignKey(UserWord)
 	outcome = models.IntegerField()
-	duration = models.TimeField()
+	duration = models.IntegerField()
+	tour = models.IntegerField()
 	def __unicode__(self):
 		return u'%s %s->%s' % (self.word.word, self.userFrom.first_name, self.userTo.first_name)
 
