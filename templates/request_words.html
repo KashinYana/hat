@@ -23,11 +23,26 @@
 }
 </style>
 
+<script>
+	function checkForm () {
+		if (isNaN(document.getElementById("number_words").value))
+		{
+			alert("Количество слов в игре должно быть числом.\n");
+		}
+		else if(document.getElementById("name_game").value == ""){
+			alert("Назовите игру.\n");
+		}
+		else {
+			document.form_create_game.submit();
+		}
+	}
+</script>
+
 <p>
 	<h1> Здесь Вы можете создать игру </h1>
 	<div id="request_words">
 		<h2> Выбирете игроков</h2>
-		<form action="/create_game/" method="post">
+		<form action="/create_game/" method="post" name="form_create_game">
 		{% for user in users %} 
 		<input type="checkbox" name="player" value="{{user.id}}"> {{user.get_full_name}}
 		<br>
@@ -38,7 +53,7 @@
 		<label for="name_game"> Название игры </label>
 		<input name = "name_game" id="name_game" value=""> </input>
 		<br>
-		<input type="submit" value="Создать шляпу!"> </input>
+		<input type="button" value="Создать шляпу!" onclick="checkForm();"> </input>
 		</form>	
 	</div>
 	<div id = "answer">
