@@ -21,36 +21,65 @@
 	width: 30%;
 	margin: 2em;
 }
+.error{
+	font-size: 80%;
+	color:red;
+}
 </style>
 
 <script>
 	function checkForm () {
-		if (isNaN(document.getElementById("number_words").value))
+		var error = 0;
+		if (isNaN(document.getElementById("number_words").value) || isNaN(parseInt(document.getElementById("number_words").value)) || parseInt(document.getElementById("number_words").value) <= 0)
 		{
-			alert("Количество слов в игре должно быть числом.\n");
+			document.getElementById("error_number_words").innerHTML = "(Должно быть введено положительное число!)";
+			error = 1;
+		} else{
+			document.getElementById("error_number_words").innerHTML = "";
 		}
-		else if(document.getElementById("name_game").value == ""){
-			alert("Назовите игру.\n");
+		if(document.getElementById("name_game").value == ""){
+			document.getElementById("error_name_game").innerHTML = "(Игра должна иметь название!)";
+			error = 1;
+		} else{
+			document.getElementById("error_name_game").innerHTML = "";	
 		}
-		else {
+
+		var numberChecked = 0;
+		players = document.getElementsByName("player");
+		for(var i = 0; i < players.length; i++){
+			if(players[i].checked == true)
+			{
+				numberChecked += 1;
+			}
+		}
+		if(numberChecked == 0) {
+			error = 1;
+			document.getElementById("error_player").innerHTML = "(Выберите хотя бы двух игроков.)";
+		} else {
+			document.getElementById("error_player").innerHTML = "";
+		}
+		if(error == 0){
 			document.form_create_game.submit();
 		}
 	}
 </script>
-
+0
 <p>
 	<h1> Здесь Вы можете создать игру </h1>
 	<div id="request_words">
 		<h2> Выбирете игроков</h2>
+		<spam id = "error_player" class="error"> </spam>
 		<form action="/create_game/" method="post" name="form_create_game">
 		{% for user in users %} 
 		<input type="checkbox" name="player" value="{{user.id}}"> {{user.get_full_name}}
 		<br>
 		{% endfor %}
 		<label for="number_words"> Сколько слов играем с человека?</label>
+		<span id="error_number_words" class="error"> </span>
 		<input name = "number_words" id="number_words" value=""> </input>
 		<br>
 		<label for="name_game"> Название игры </label>
+		<span id="error_name_game" class="error"> </span>
 		<input name = "name_game" id="name_game" value=""> </input>
 		<br>
 		<input type="button" value="Создать шляпу!" onclick="checkForm();"> </input>

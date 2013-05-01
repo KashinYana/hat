@@ -72,9 +72,21 @@ h3{
 	visibility: hidden;
 }
 
+.button_sort{
+	background-color: transparent; 
+    border-radius: 5px;
+    margin-right: 1em;
+}
+
+.img_sort{
+	height: 1em;
+	width: 1em;
+}
+
 </style>
 
 <script>
+
 	function showHide(nameId){
 		divstyle = document.getElementById(nameId).style.visibility; 
         if (divstyle.toLowerCase() == "visible") { 
@@ -87,7 +99,44 @@ h3{
         } 
 	}
 
+	function sort(nameTable, cmp){
+		t = Array.prototype.slice.call(document.getElementById(nameTable).tBodies[0].rows, 0);
+		t2 = t.slice(1, t.length).sort(cmp);
+		t2_clone = new Array(t2.length);
+		for(i = 0; i < t2.length; i++){
+			t2_clone[i] = new Array(t2[i].cells.length)
+			for(j = 0; j < t2[i].cells.length; j++){
+				t2_clone[i][j] = t2[i].cells[j].innerHTML;
+			}
+		}
+		for(i = 1; i < t.length; i++){
+			for(j = 0; j < t[i].cells.length; j++)
+			{
+				document.getElementById(nameTable).tBodies[0].rows[i].cells[j].innerHTML = t2_clone[i-1][j];
+			}
+		}
+		
+	}
+
+	function compareReverse(a, b){
+		return parseInt(a.cells[0].innerHTML) < parseInt(b.cells[0].innerHTML);
+	}
+
+	function compare(a, b){
+		return parseInt(a.cells[0].innerHTML) > parseInt(b.cells[0].innerHTML);
+	}
+
+	function compareStrReverse(a, b){
+		return a.cells[0].innerHTML.trim() < b.cells[0].innerHTML.trim();
+	}
+
+	function compareStr(a, b){
+		return a.cells[0].innerHTML.trim() > b.cells[0].innerHTML.trim();
+	}
+
 </script>
+
+
 
 <p id = "history_game">
 	<h1> История игры "{{game.name}}"  </h1>
@@ -95,9 +144,16 @@ h3{
 		{% if rating %}
 			<h3 onclick="showHide('table_rating');"> Таблица результатов игроков </h3>
 			<div id="table_rating" class = "hide_div">
-				<table border="1">
+				<table border="1" id = "table_rating_inner">
 				<tr>
-					<th> Место </th> <th> Игрок </th> <th> Очки </th> <th> Очки в основное время </th>  <th> Очки в дополнительное время</th>
+					<th> Место <br>
+						<button name="up" class = "button_sort" onclick="sort('table_rating_inner', compare );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', compareReverse );"> <img src="/media/down.png" class="img_sort"/> </button>
+					</th> 
+					<th> Игрок </th>
+					 <th> Очки </th>
+					  <th> Очки в основное время </th> 
+					   <th> Очки в дополнительное время</th>
 					<th> Сколько раундов сыграно </th>
 				</tr>
 				{% for id in rating %}
@@ -114,9 +170,13 @@ h3{
 		{% if ratingPairUsers %}
 			<h3 onclick="showHide('table_pair_users');" > Результаты игроков по парам </h3>
 			<div id="table_pair_users" class = "hide_div">			
-				<table>
+				<table id = "table_pair_users_inner">
 					<tr>
-						<th> Место </th> <th> Игрок 1 </th> <th> Игрок 2</th> <th> Очки -> </th> <th> Очки <- </th>
+						<th> Место <br>
+						<button name="up" class = "button_sort" onclick="sort('table_pair_users_inner', compare );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_pair_users_inner', compareReverse );"> <img src="/media/down.png" class="img_sort"/> </button>
+						</th> 
+						<th> Игрок 1 </th> <th> Игрок 2</th> <th> Очки -> </th> <th> Очки <- </th>
 					</tr>
 					{% for line in ratingPairUsers %}
 						<td> {{line.0}} </td>
@@ -134,9 +194,10 @@ h3{
 		{% if reportGame %}
 			<h3 onclick="showHide('table_report_game');" > Главная статистика по словам </h3>
 			<div id="table_report_game" class = "hide_div">
-				<table border="1" id = "id">
+				<table border="1" id = "table_report_game_inner">
 					<tr>
-						<th ROWSPAN=2> Слово </th> <th ROWSPAN=2> Кто объяснял </th> <th ROWSPAN=2 > Кому объяснял</th> <th COLSPAN=2> Объяснил?</th> 
+						<th ROWSPAN=2> Слово <br>
+							</th> <th ROWSPAN=2> Кто объяснял </th> <th ROWSPAN=2 > Кому объяснял</th> <th COLSPAN=2> Объяснил?</th> 
 					</tr>
 					<tr>
 						<th> Основное время </th>
@@ -173,9 +234,13 @@ h3{
 		{% if statisticsWords %}
 			<h3 onclick="showHide('table_statistics_words');" > Подробная статистика по словам </h3>
 			<div id="table_statistics_words" class = "hide_div">			
-				<table>
+				<table id = "table_statistics_words_inner">
 					<tr>
-					<th> Слово </th> <th> Сколько раз объясняли </th> <th> Суммарное время объяснения </th> <th>  Время на последнее объяснение </th> <th> Кто объяснил </th> <th> Кто отгадал </th>
+					<th> Слово  <br>
+					<button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', compareStr );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', compareStrReverse );"> <img src="/media/down.png" class="img_sort"/> </button>
+						
+					</th> <th> Сколько раз объясняли </th> <th> Суммарное время объяснения </th> <th>  Время на последнее объяснение </th> <th> Кто объяснил </th> <th> Кто отгадал </th>
 					</tr>
 					{% for line in statisticsWords %}
 					<tr>
