@@ -99,9 +99,9 @@ h3{
         } 
 	}
 
-	function sort(nameTable, cmp){
+	function sort(nameTable, cmp, startRow){
 		t = Array.prototype.slice.call(document.getElementById(nameTable).tBodies[0].rows, 0);
-		t2 = t.slice(1, t.length).sort(cmp);
+		t2 = t.slice(startRow, t.length).sort(cmp.compare);
 		t2_clone = new Array(t2.length);
 		for(i = 0; i < t2.length; i++){
 			t2_clone[i] = new Array(t2[i].cells.length)
@@ -109,29 +109,45 @@ h3{
 				t2_clone[i][j] = t2[i].cells[j].innerHTML;
 			}
 		}
-		for(i = 1; i < t.length; i++){
+		for(i = startRow; i < t.length; i++){
 			for(j = 0; j < t[i].cells.length; j++)
 			{
-				document.getElementById(nameTable).tBodies[0].rows[i].cells[j].innerHTML = t2_clone[i-1][j];
+				document.getElementById(nameTable).tBodies[0].rows[i].cells[j].innerHTML = t2_clone[i-startRow][j];
 			}
-		}
-		
+		}	
 	}
 
-	function compareReverse(a, b){
-		return parseInt(a.cells[0].innerHTML) < parseInt(b.cells[0].innerHTML);
+	function temp(w) {
+    	this.type = w;
+    	this.getInfo = function (a, b ) {return parseInt(a.cells[w].innerHTML) < parseInt(b.cells[w].innerHTML);} 
 	}
 
-	function compare(a, b){
-		return parseInt(a.cells[0].innerHTML) > parseInt(b.cells[0].innerHTML);
+	function Comparator(col, reverse) {
+		this.col = col; 
+		this.reverse = reverse; 
+        this.compare  = function(a, b) {
+        	if (!reverse)
+        		return parseInt(a.cells[col].innerHTML) - parseInt(b.cells[col].innerHTML);
+        	else
+        		return parseInt(b.cells[col].innerHTML) - parseInt(a.cells[col].innerHTML);
+    	}
 	}
 
-	function compareStrReverse(a, b){
-		return a.cells[0].innerHTML.trim() < b.cells[0].innerHTML.trim();
-	}
-
-	function compareStr(a, b){
-		return a.cells[0].innerHTML.trim() > b.cells[0].innerHTML.trim();
+	function ComparatorString(col, reverse) { 
+        this.compare  = function(a, b) {
+        	if (!reverse) {
+        		if(a.cells[col].innerHTML < b.cells[col].innerHTML)
+        			return 1;
+        		else
+        			return -1;
+        	} else {
+        		if(b.cells[col].innerHTML < a.cells[col].innerHTML)
+        			return 1;
+        		else{
+        			return -1;
+        		}
+        	}
+    	}
 	}
 
 </script>
@@ -146,15 +162,32 @@ h3{
 			<div id="table_rating" class = "hide_div">
 				<table border="1" id = "table_rating_inner">
 				<tr>
-					<th> Место <br>
-						<button name="up" class = "button_sort" onclick="sort('table_rating_inner', compare );"> <img src="/media/up.jpg" class="img_sort"/> </button>
-						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', compareReverse );"> <img src="/media/down.png" class="img_sort"/> </button>
+					<th> Место <br  />
+						<button name="up" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(0, false), 1);"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(0, true) , 1);"> <img src="/media/down.png" class="img_sort"/> </button>
 					</th> 
-					<th> Игрок </th>
-					 <th> Очки </th>
-					  <th> Очки в основное время </th> 
-					   <th> Очки в дополнительное время</th>
-					<th> Сколько раундов сыграно </th>
+					<th> Игрок <br />
+						<button name="up" class = "button_sort" onclick="sort('table_rating_inner', new ComparatorString(1, false), 1);"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', new ComparatorString(1, true) , 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+					</th>
+					 <th> Очки <br />
+					 	<button name="up" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(2, false), 1);"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(2, true) , 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+					 </th>
+					  <th> Очки в основное время <br /> 
+						<button name="up" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(3, false), 1);"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(3, true) , 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+					  </th> 
+					   <th> Очки в дополнительное время <br />
+						<button name="up" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(4, false), 1);"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(4, true) , 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+					   </th>
+					<th> Сколько раундов сыграно <br />
+						<button name="up" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(5, false), 1);"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_rating_inner', new Comparator(5, true) , 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+					   
+
+					</th>
 				</tr>
 				{% for id in rating %}
 				<tr>
@@ -173,17 +206,32 @@ h3{
 				<table id = "table_pair_users_inner">
 					<tr>
 						<th> Место <br>
-						<button name="up" class = "button_sort" onclick="sort('table_pair_users_inner', compare );"> <img src="/media/up.jpg" class="img_sort"/> </button>
-						<button name="down" class = "button_sort" onclick="sort('table_pair_users_inner', compareReverse );"> <img src="/media/down.png" class="img_sort"/> </button>
+						<button name="up" class = "button_sort" onclick="sort('table_pair_users_inner', new Comparator(0, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_pair_users_inner', new Comparator(0, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
 						</th> 
-						<th> Игрок 1 </th> <th> Игрок 2</th> <th> Очки -> </th> <th> Очки <- </th>
+						<th> Игрок 1 <br />
+						<button name="up" class = "button_sort" onclick="sort('table_pair_users_inner', new ComparatorString(1, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_pair_users_inner', new ComparatorString(1, true), 1 );"> <img src="/media/down.png" class="img_sort"/> </button>
+						</th> <th> Игрок 2 <br />
+						<button name="up" class = "button_sort" onclick="sort('table_pair_users_inner', new ComparatorString(2, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_pair_users_inner', new ComparatorString(2, true), 1 );"> <img src="/media/down.png" class="img_sort"/> </button>
+						</th> 
+						<th> Очки -> <br />
+						<button name="up" class = "button_sort" onclick="sort('table_pair_users_inner', new Comparator(3, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_pair_users_inner', new Comparator(3, true), 1 );"> <img src="/media/down.png" class="img_sort"/> </button>
+						</th> <th> Очки <- <br />
+						<button name="up" class = "button_sort" onclick="sort('table_pair_users_inner', new Comparator(4, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+						<button name="down" class = "button_sort" onclick="sort('table_pair_users_inner', new Comparator(4, true), 1 );"> <img src="/media/down.png" class="img_sort"/> </button>
+						</th>
 					</tr>
 					{% for line in ratingPairUsers %}
+					<tr>
 						<td> {{line.0}} </td>
 						<td> {{line.1.0.get_full_name}} </td>
 						<td> {{line.1.1.get_full_name}} </td>
 						<td> {{line.1.2}} </td>
 						<td> {{line.1.3}} </td>
+					</tr>
 					{% endfor %}
 				</table>
 			</div>
@@ -196,12 +244,27 @@ h3{
 			<div id="table_report_game" class = "hide_div">
 				<table border="1" id = "table_report_game_inner">
 					<tr>
-						<th ROWSPAN=2> Слово <br>
-							</th> <th ROWSPAN=2> Кто объяснял </th> <th ROWSPAN=2 > Кому объяснял</th> <th COLSPAN=2> Объяснил?</th> 
+						<th ROWSPAN=2> Слово <br />
+					<button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(0, false), 2 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(0, true), 2);"> <img src="/media/down.png" class="img_sort"/> </button>
+
+					</th> <th ROWSPAN=2> Кто объяснял <br />
+					<button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(1, false), 2 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(1, true), 2);"> <img src="/media/down.png" class="img_sort"/> </button>
+
+					 </th> <th ROWSPAN=2 > Кому объяснял <br />
+
+					 <button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(2, false), 2 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(2, true), 2);"> <img src="/media/down.png" class="img_sort"/> </button>
+
+					</th> <th COLSPAN=2> Объяснил?<br/>
+				</th>
 					</tr>
 					<tr>
-						<th> Основное время </th>
-						<th> Дополнительное время </th> 
+						<th> Основное время <br />
+						</th>
+						<th> Дополнительное время <br />
+						</th> 
 					</tr>
 
 					{% for report in reportGame %}
@@ -237,11 +300,32 @@ h3{
 				<table id = "table_statistics_words_inner">
 					<tr>
 					<th> Слово  <br>
-					<button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', compareStr );"> <img src="/media/up.jpg" class="img_sort"/> </button>
-					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', compareStrReverse );"> <img src="/media/down.png" class="img_sort"/> </button>
+					<button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', new ComparatorString(0, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', new ComparatorString(0, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
 						
-					</th> <th> Сколько раз объясняли </th> <th> Суммарное время объяснения </th> <th>  Время на последнее объяснение </th> <th> Кто объяснил </th> <th> Кто отгадал </th>
-					</tr>
+					</th> <th> Сколько раз объясняли <br /> 
+					<button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', new Comparator(1, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', new Comparator(1, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+
+					</th> <th> Суммарное время объяснения <br />
+					<button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', new Comparator(2, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', new Comparator(2, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+					
+					</th> <th>  Время на последнее объяснение <br /> 
+					<button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', new Comparator(3, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', new Comparator(3, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+					
+				    </th> <th> Кто объяснил  <br />
+				    <button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', new ComparatorString(4, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', new ComparatorString(4, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+
+					</th> <th> Кто отгадал  <br />
+
+					<button name="up" class = "button_sort" onclick="sort('table_statistics_words_inner', new ComparatorString(5, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_statistics_words_inner', new ComparatorString(5, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
+
+					</th>
+						</tr>
 					{% for line in statisticsWords %}
 					<tr>
 					<td> {{line.0}}</td> <td> {{line.1.numAttempts}}</td>
