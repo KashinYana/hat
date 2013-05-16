@@ -188,7 +188,14 @@ def history_game(request, gameId):
 
 def queue_games(request):
 	games = Game.objects.filter(creator = request.user)
-	return render_to_response('queue_games.html', {'games':games},context_instance=RequestContext(request))
+	gamesFinished = []
+	gamesNoFinished = []
+	for game in games:
+		if len(ReportGame.objects.filter(gameId = game)) > 0:
+			gamesFinished.append(game)
+		else:
+			gamesNoFinished.append(game)
+	return render_to_response('queue_games.html', {'gamesFinished':gamesFinished, 'gamesNoFinished':gamesNoFinished},context_instance=RequestContext(request))
 
 def take_data(request):	
 	json = {}
@@ -203,7 +210,8 @@ def take_data(request):
 			users = map(lambda x: {'userId':x.id, 'userName':x.get_full_name() }, users)
 			words = game[0].userword_set.all()
 			words = map(lambda x: {'word': x.word.word, 'id': x.id}, words)
-			json = simplejson.dumps({'gameId':game[0].id, 'words':words, 'users':users})
+			json = simplejson.dumps({'gameId':game[0].id, 'words':words, 'users':users, 'GameType': 'SINGLE',\
+				'roundLength' : 20, 'afterRoundGuessTime' : 3, 'turns': -1})
 	
 	return HttpResponse(json)		
 

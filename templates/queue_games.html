@@ -3,43 +3,58 @@
 {% block main %}
 
 <style type="text/css">
-#request_words{
+#no_finished_games{
 	text-align: left;
 	position: relative;
-	width: 50%;
-	float: left;
+	width: 41%;
 	margin: 1em;
 	padding-left: 2em;
-	padding-right: 2em; 
-}
-#request_words h2{
-	position: relative;
-	font-size: 110%;
-}
-#answer{
+	padding-right: 1em; 
 	float: left;
-	width: 30%;
-	margin: 2em;
 }
+
+#finished_games{
+	text-align: left;
+	position: relative;
+	width: 41%;
+	margin: 1em;
+	padding-left: 1em;
+	padding-right: 2em;
+	float: left; 
+}
+.status_games caption{
+	font-size: 150%;
+}
+
+
 </style>
 
 <p>
-	<h1> Созданные, но не сыгранные игры </h1>
-	<div id="request_words">
-		<table>
+	<div id="no_finished_games">
+		<table class = "status_games">
+		<caption> Созданные, но не сыгранные игры  </caption>
 		<tr>
 		<th> Название игры </th> <th> Номер игры </th> <th> Пароль </th>
 		</tr>
-		{%for game in games%}
+		{%for game in gamesNoFinished %}
 		<tr>
 			<td> {{game.name}} </td> <td> {{game.id}}</td><td> {{game.password}} </td>
 		</tr>
 		{%endfor%}
 		</table>	
 	</div>
-	<div id = "answer">
-
+	<div id = "finished_games">
+		<table class = "status_games">
+		<caption>  Завершенные игры </caption>
+		<tr>
+		<th> Название игры </th> <th> Номер игры </th> <th> Пароль </th>
+		</tr>
+		{%for game in gamesFinished %}
+		<tr>
+			<td> {{game.name}} </td> <td> {{game.id}}</td><td> {{game.password}} </td>
+		</tr>
+		{%endfor%}
+		</table>	
 	</div>
-
 </p>
 {% endblock %}
