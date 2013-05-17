@@ -244,28 +244,20 @@ h3{
 			<div id="table_report_game" class = "hide_div">
 				<table border="1" id = "table_report_game_inner">
 					<tr>
-						<th ROWSPAN=2> Слово <br />
-					<button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(0, false), 2 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
-					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(0, true), 2);"> <img src="/media/down.png" class="img_sort"/> </button>
+						<th> Слово <br />
+					<button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(0, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(0, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
 
-					</th> <th ROWSPAN=2> Кто объяснял <br />
-					<button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(1, false), 2 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
-					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(1, true), 2);"> <img src="/media/down.png" class="img_sort"/> </button>
+					</th> <th> Кто объяснял <br />
+					<button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(1, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(1, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
 
-					 </th> <th ROWSPAN=2 > Кому объяснял <br />
+					 </th> <th> Кому объяснял <br />
 
-					 <button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(2, false), 2 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
-					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(2, true), 2);"> <img src="/media/down.png" class="img_sort"/> </button>
+					 <button name="up" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(2, false), 1 );"> <img src="/media/up.jpg" class="img_sort"/> </button>
+					<button name="down" class = "button_sort" onclick="sort('table_report_game_inner', new ComparatorString(2, true), 1);"> <img src="/media/down.png" class="img_sort"/> </button>
 
-					</th> <th COLSPAN=2> Объяснил?<br/>
-				</th>
-					</tr>
-					<tr>
-						<th> Основное время <br />
-						</th>
-						<th> Дополнительное время <br />
-						</th> 
-					</tr>
+					</th> <th> Объяснил?</th>
 
 					{% for report in reportGame %}
 					 <tr>
@@ -274,17 +266,15 @@ h3{
 					 <td> {{report.userTo.get_full_name}} </td>
 					 <td> 
 					 	  {% if  report.outcome == 1 %}
-					 	  	да
-					 	  {% else %}
+					 	  	да, основное время
+					 	  {% elif report.outcome == 2 %}
+					 	  	да, доп. время
+					 	  {% elif report.outcome == 0 %}
 					 	  	нет
+					 	  {% elif report.outcome == -1 %}
+					 	  	брак
 					 	  {% endif %}
-					 </td>
-					 <td> 
-					 	  {% if  report.outcome == 2 %}
-					 	  	да
-					 	  {% else %}
-					 	  	нет
-					 	  {% endif %}
+
 					 </td>
 					</tr>
 					{% endfor %}

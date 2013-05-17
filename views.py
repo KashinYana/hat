@@ -85,21 +85,38 @@ def request_words(request, gameId = 0, password = ""):
 def new_result_game(request, accept = ""):
 	return render_to_response('new_result_game.html', {'accept': accept}, context_instance=RequestContext(request))	
 
+
+def convert_outcome(outcome):
+	if outcome == 'OK':
+		return 1 
+	elif outcome == 'FAIL':
+		return -1
+	elif outcome == 'GUESSED':
+		return 2
+	elif outcome == 'NOT_GUESSED':
+		return 0
+
+	assert(1 == 0)
+
 def send_result_game(request):
 	accept = ""
 	if request.method == "POST":
 		dataGame = request.POST.get('data_game')
 		gameId = int(simplejson.loads(dataGame)['gameId'])
-		statistics = simplejson.loads(dataGame)['statistics']
-
-		for explanation in statistics:
-			newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation['wordId']), \
-				userFrom_id = int(explanation['userFrom']), userTo_id = int(explanation['userTo']),\
-				outcome = int(explanation['outcome']), duration = int(explanation['duration']), \
-				tour = int(explanation['tour']) )
-			newDataGame.save()
-		accept = "Данные успешно сохранены."
+		rounds = simplejson.loads(dataGame)['roundResults']
+		for i in range(len(rounds)):
+			roundLog = rounds[i]
+			roundId = int(roundLog['roundId'])
+			stats = roundLog['stats']
+			for explanation in stats:
+				newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation['word']['id']), \
+					userFrom_id = int(explanation['playerFrom']['userId']), userTo_id = int(explanation['playerTo']['userId']),\
+					outcome = convert_outcome(explanation['result']), duration = int(explanation['time']), \
+					tour = roundId)
+				newDataGame.save()
+			accept = "Данные успешно сохранены."
 	return new_result_game(request, accept)
+
 
 def words(request):
 	form = WordForm()
