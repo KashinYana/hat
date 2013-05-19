@@ -107,10 +107,12 @@ def send_result_game(request):
 		for i in range(len(rounds)):
 			roundLog = rounds[i]
 			roundId = int(roundLog['roundId'])
+			userFromId = int(roundLog['playerFrom']['userId'])
+			userToId = int(roundLog['playerTo']['userId'])
 			stats = roundLog['stats']
 			for explanation in stats:
 				newDataGame = ReportGame(gameId_id = gameId, word_id = int(explanation['word']['id']), \
-					userFrom_id = int(explanation['playerFrom']['userId']), userTo_id = int(explanation['playerTo']['userId']),\
+					userFrom_id = userFromId, userTo_id = userToId,\
 					outcome = convert_outcome(explanation['result']), duration = int(explanation['time']), \
 					tour = roundId)
 				newDataGame.save()
